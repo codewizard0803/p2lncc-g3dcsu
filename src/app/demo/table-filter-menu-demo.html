@@ -1,4 +1,8 @@
-<p-dropdown [(ngModel)]="selectedTable" [options]="tables" placeholder="Select a table"></p-dropdown>
+<p-dropdown
+  [(ngModel)]="selectedTable"
+  [options]="tables"
+  placeholder="Select a table"
+></p-dropdown>
 
 <div class="card">
   <p-toast></p-toast>
@@ -30,19 +34,34 @@
             (click)="clear(dt1)"
           ></button>
           <span class="p-input-icon-left">
-          <i class="pi pi-search"></i>
-          <input
-            pInputText
-            type="text"
-            (input)="dt1.filterGlobal($event.target.value, 'contains')"
-            placeholder="Search keyword"
-          />
-        </span>
+            <i class="pi pi-search"></i>
+            <input
+              pInputText
+              type="text"
+              (input)="dt1.filterGlobal($event.target.value, 'contains')"
+              placeholder="Search keyword"
+            />
+          </span>
           <span class="p-input-icon-left ml-auto">
-          <p-multiSelect [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header"
-                         selectedItemsLabel="{0} columns selected" [style]="{'min-width': '200px'}" placeholder="Choose Columns"></p-multiSelect>
-        </span>
-          <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()" class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
+            <p-multiSelect
+              [options]="cols"
+              [(ngModel)]="selectedColumns"
+              optionLabel="header"
+              selectedItemsLabel="{0} columns selected"
+              [style]="{'min-width': '200px'}"
+              placeholder="Choose Columns"
+            ></p-multiSelect>
+          </span>
+          <button
+            type="button"
+            pButton
+            pRipple
+            icon="pi pi-file-excel"
+            (click)="exportExcel()"
+            class="p-button-success mr-2"
+            pTooltip="XLS"
+            tooltipPosition="bottom"
+          ></button>
         </div>
       </ng-template>
 
@@ -50,44 +69,90 @@
       <ng-template pTemplate="header" let-columns>
         <!-- Frozen Column (Name) -->
         <tr>
-          <th style="min-width: 15rem" pSortableColumn="{{cols[0].field}}" pFrozenColumn>
+          <th
+            style="min-width: 15rem"
+            pSortableColumn="{{cols[0].field}}"
+            pFrozenColumn
+          >
             <div class="flex align-items-center">
               {{ cols[0].header }}
-              <p-columnFilter [type]="cols[0].filterType" [field]="cols[0].field" display="menu"></p-columnFilter>
+              <p-columnFilter
+                [type]="cols[0].filterType"
+                [field]="cols[0].field"
+                display="menu"
+              ></p-columnFilter>
               <p-sortIcon [field]="cols[0].field"></p-sortIcon>
             </div>
           </th>
 
           <!-- Regular Columns -->
-          <th style="min-width: 15rem" *ngFor="let col of columns | slice:1" pSortableColumn="{{col.field}}" pReorderableColumn>
+          <th
+            style="min-width: 15rem"
+            *ngFor="let col of columns | slice:1"
+            pSortableColumn="{{col.field}}"
+            pReorderableColumn
+          >
             <div class="flex align-items-center">
               {{ col.header }}
-              <p-columnFilter [type]="col.filterType" [field]="col.field" display="menu"></p-columnFilter>
+              <p-columnFilter
+                [type]="col.filterType"
+                [field]="col.field"
+                display="menu"
+              ></p-columnFilter>
               <p-sortIcon [field]="col.field"></p-sortIcon>
             </div>
           </th>
 
           <!-- For the edit icon -->
-          <th style="width:3em"></th>
+          <th style="width: 3em"></th>
         </tr>
       </ng-template>
 
       <!-- Row Grouping for Country -->
-      <ng-template pTemplate="groupheader" let-customer let-expanded="expanded" let-columns="columns">
+      <ng-template
+        pTemplate="groupheader"
+        let-customer
+        let-expanded="expanded"
+        let-columns="columns"
+      >
         <tr>
           <td [attr.colspan]="columns.length + 1">
-            <button type="button" pButton pRipple [pRowToggler]="customer" class="p-button-text p-button-rounded p-button-plain mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
-            <span class="font-bold ml-2">{{ customer.country.name }}</span>
+            <button
+              type="button"
+              pButton
+              pRipple
+              [pRowToggler]="customer"
+              class="p-button-text p-button-rounded p-button-plain mr-2"
+              [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+            ></button>
+            <span class="font-bold ml-2"
+              >{{ customer.country.name }}
+              ({{calculateCustomerTotal(customer.representative.name)}})</span
+            >
           </td>
         </tr>
       </ng-template>
 
       <!-- Table Body -->
-      <ng-template pTemplate="rowexpansion" let-customer let-columns="columns" let-editing="editing" let-ri="rowIndex" let-expanded="expanded">
+      <ng-template
+        pTemplate="rowexpansion"
+        let-customer
+        let-columns="columns"
+        let-editing="editing"
+        let-ri="rowIndex"
+        let-expanded="expanded"
+      >
         <tr [pEditableRow]="customer">
-          <!--        <td>-->
-          <!--          <button type="button" pButton pRipple [pRowToggler]="customer" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>-->
-          <!--        </td>-->
+          <!-- <td>
+            <button
+              type="button"
+              pButton
+              pRipple
+              [pRowToggler]="customer"
+              class="p-button-text p-button-rounded p-button-plain"
+              [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+            ></button>
+          </td> -->
           <!-- Frozen Column (Name) Data -->
           <td pFrozenColumn>
             <!--          <ng-container *ngSwitchCase="'name'">{{ customer.name }}</ng-container>-->
@@ -96,23 +161,36 @@
 
           <td *ngFor="let col of columns | slice:1" [ngSwitch]="col.field">
             <!-- Name -->
-            <ng-container *ngSwitchCase="'name'">{{ customer.name }}</ng-container>
+            <ng-container *ngSwitchCase="'name'"
+              >{{ customer.name }}</ng-container
+            >
 
             <!-- Country -->
-            <ng-container *ngSwitchCase="'country.name'">{{ customer.country.name }}</ng-container>
+            <ng-container *ngSwitchCase="'country.name'"
+              >{{ customer.country.name }}</ng-container
+            >
 
             <!-- Agent -->
-            <ng-container *ngSwitchCase="'representative.name'">{{ customer.representative.name }}</ng-container>
+            <ng-container *ngSwitchCase="'representative.name'"
+              >{{ customer.representative.name }}</ng-container
+            >
 
             <!-- Date -->
-            <ng-container *ngSwitchCase="'date'">{{ customer.date | date: 'MM/dd/yyyy' }}</ng-container>
+            <ng-container *ngSwitchCase="'date'"
+              >{{ customer.date | date: 'MM/dd/yyyy' }}</ng-container
+            >
 
             <!-- Balance -->
-            <ng-container *ngSwitchCase="'balance'">{{ customer.balance | currency: 'USD':'symbol' }}</ng-container>
+            <ng-container *ngSwitchCase="'balance'"
+              >{{ customer.balance | currency: 'USD':'symbol' }}</ng-container
+            >
 
             <!-- Status -->
             <ng-container *ngSwitchCase="'status'">
-              <p-tag [value]="customer.status" [severity]="getSeverity(customer.status)"></p-tag>
+              <p-tag
+                [value]="customer.status"
+                [severity]="getSeverity(customer.status)"
+              ></p-tag>
             </ng-container>
 
             <!-- Activity -->
@@ -123,26 +201,63 @@
             <ng-container *ngSwitchCase="'activity'">
               <p-cellEditor>
                 <ng-template pTemplate="input">
-                  <input pInputText type="text" [(ngModel)]="customer.activity">
+                  <input
+                    pInputText
+                    type="text"
+                    [(ngModel)]="customer.activity"
+                  />
                 </ng-template>
                 <ng-template pTemplate="output">
                   <!--                {{customer.activity}}-->
-                  <p-progressBar [value]="customer.activity" [showValue]="false"></p-progressBar>
+                  <p-progressBar
+                    [value]="customer.activity"
+                    [showValue]="false"
+                  ></p-progressBar>
                 </ng-template>
               </p-cellEditor>
             </ng-container>
 
             <!-- Verified -->
             <ng-container *ngSwitchCase="'verified'">
-              <i class="pi" [ngClass]="{ 'text-green-500 pi-check-circle': customer.verified, 'text-red-500 pi-times-circle': !customer.verified }"></i>
+              <i
+                class="pi"
+                [ngClass]="{ 'text-green-500 pi-check-circle': customer.verified, 'text-red-500 pi-times-circle': !customer.verified }"
+              ></i>
             </ng-container>
           </td>
           <!-- Edit Icon -->
           <td>
             <div class="flex align-items-center justify-content-center gap-2">
-              <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil" (click)="onRowEditInit(customer)" class="p-button-rounded p-button-text"></button>
-              <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check" (click)="onRowEditSave(customer)" class="p-button-rounded p-button-text p-button-success mr-2"></button>
-              <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times" (click)="onRowEditCancel(customer, ri)" class="p-button-rounded p-button-text p-button-danger"></button>
+              <button
+                *ngIf="!editing"
+                pButton
+                pRipple
+                type="button"
+                pInitEditableRow
+                icon="pi pi-pencil"
+                (click)="onRowEditInit(customer)"
+                class="p-button-rounded p-button-text"
+              ></button>
+              <button
+                *ngIf="editing"
+                pButton
+                pRipple
+                type="button"
+                pSaveEditableRow
+                icon="pi pi-check"
+                (click)="onRowEditSave(customer)"
+                class="p-button-rounded p-button-text p-button-success mr-2"
+              ></button>
+              <button
+                *ngIf="editing"
+                pButton
+                pRipple
+                type="button"
+                pCancelEditableRow
+                icon="pi pi-times"
+                (click)="onRowEditCancel(customer, ri)"
+                class="p-button-rounded p-button-text p-button-danger"
+              ></button>
             </div>
           </td>
         </tr>
@@ -196,7 +311,9 @@
   </div>
 
   <div *ngIf="selectedTable === 'holdings'" [@fadeInOut]>
-    <p-message severity="error" *ngIf="showError">Total allocation should sum to 100%</p-message>
+    <p-message severity="error" *ngIf="showError"
+      >Total allocation should sum to 100%</p-message
+    >
 
     <p-table [value]="etfs">
       <ng-template pTemplate="header">
@@ -209,16 +326,28 @@
       </ng-template>
       <ng-template pTemplate="body" let-etf>
         <tr>
-          <td><input type="text" [(ngModel)]="etf.ticker"></td>
-          <td><input type="text" [(ngModel)]="etf.name"></td>
-          <td><p-inputNumber [(ngModel)]="etf.mer" [step]="0.01"></p-inputNumber></td>
-          <td><p-inputNumber [(ngModel)]="etf.allocation" [step]="0.01"></p-inputNumber></td>
+          <td><input type="text" [(ngModel)]="etf.ticker" /></td>
+          <td><input type="text" [(ngModel)]="etf.name" /></td>
+          <td>
+            <p-inputNumber [(ngModel)]="etf.mer" [step]="0.01"></p-inputNumber>
+          </td>
+          <td>
+            <p-inputNumber
+              [(ngModel)]="etf.allocation"
+              [step]="0.01"
+            ></p-inputNumber>
+          </td>
         </tr>
       </ng-template>
       <ng-template pTemplate="footer">
         <tr>
           <td colspan="4">
-            <button pButton type="button" label="Generate" (click)="generateWeightedMER()"></button>
+            <button
+              pButton
+              type="button"
+              label="Generate"
+              (click)="generateWeightedMER()"
+            ></button>
           </td>
         </tr>
       </ng-template>
@@ -237,7 +366,10 @@
       </ng-template>
     </p-table>
 
-    <p-chart type="doughnut" [data]="{ datasets: [{ data: [weightedMER, 100-weightedMER], backgroundColor: ['#FF6384', '#36A2EB'] }], labels: ['Weighted MER', 'Other'] }" *ngIf="!showError"></p-chart>
-
+    <p-chart
+      type="doughnut"
+      [data]="{ datasets: [{ data: [weightedMER, 100-weightedMER], backgroundColor: ['#FF6384', '#36A2EB'] }], labels: ['Weighted MER', 'Other'] }"
+      *ngIf="!showError"
+    ></p-chart>
   </div>
 </div>
